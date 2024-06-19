@@ -1,0 +1,340 @@
+---
+title: "ML1"
+subtitle: ""
+author: "Sung Rye Park"
+date: "`r format(Sys.Date())`"
+output:  
+  rmdformats::robobook: 
+    code_folding: show 
+    number_sections: FALSE
+    toc_depth: 6
+    toc_float: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, eval =T, fig.align = "left", 
+                      message=F, warning=F,
+                      results = "markup",
+                      error = TRUE,
+                      highlight = TRUE,
+                      prompt = FALSE,
+                      tidy = FALSE)
+```
+
+[알고리즘](https://machinelearningmastery.com/spot-check-machine-learning-algorithms-in-r/)<br>
+
+## Linear Algorithms
+
+### 1. Linear Regression 
+
+```{r}
+# load the library
+library(mlbench)
+# load data
+data(BostonHousing)
+# fit model
+fit <- lm(medv~., BostonHousing)
+# summarize the fit
+print(fit)
+# make predictions
+predictions <- predict(fit, BostonHousing)
+# summarize accuracy
+mse <- mean((BostonHousing$medv - predictions)^2)
+print(mse)
+```
+
+이 내용은 선형 회귀 모델의 결과를 나타내는 것으로, `lm()` 함수를 사용하여 보스턴 주택 데이터셋(`BostonHousing`)에 대해 `medv` (집값의 중앙값)를 종속 변수로 하여 다른 모든 변수들을 독립 변수로 사용한 회귀 분석 결과입니다. 각 계수는 해당 변수가 `medv`에 미치는 영향의 크기와 방향을 나타냅니다.
+
+### 계수 해석
+- **(Intercept) 36.46**: 이 값은 모든 독립변수가 0일 때의 예상 `medv` 값입니다.
+- **crim -0.108**: 범죄율이 1 단위 증가할 때, 주택 가격의 중앙값은 평균적으로 0.108 단위 감소합니다.
+- **zn 0.0464**: 주거용 토지 비율이 1% 포인트 증가할 때마다 주택 가격의 중앙값은 0.0464 단위 증가합니다.
+- **indus 0.02056**: 비소매 상업 지역 비율이 1% 포인트 증가할 때, 주택 가격의 중앙값은 0.02056 단위 증가합니다.
+- **chas1 2.687**: Charles River 변수(더미 변수로서, 강 주변(1)과 아닌 경우(0))에서, 강 주변일 경우 주택 가격은 2.687 단위 증가합니다.
+- **nox -17.77**: 대기 중 NOx 농도가 1 ppm 증가할 때, 주택 가격의 중앙값은 약 17.77 단위 감소합니다.
+- **rm 3.810**: 주택당 평균 방 개수가 1개 증가할 때, 주택 가격의 중앙값은 약 3.810 단위 증가합니다.
+- **age 0.000692**: 1940년 이전에 지어진 주택의 비율이 1% 포인트 증가할 때, 주택 가격의 중앙값은 0.000692 단위 증가합니다.
+- **dis -1.476**: 보스턴의 5개 고용 센터까지의 가중 평균 거리가 1 단위 증가할 때, 주택 가격의 중앙값은 1.476 단위 감소합니다.
+- **rad 0.306**: 고속도로 접근성 지수가 1 단위 증가할 때, 주택 가격의 중앙값은 0.306 단위 증가합니다.
+- **tax -0.01233**: 재산세율($10,000당)이 1 단위 증가할 때, 주택 가격의 중앙값은 0.01233 단위 감소합니다.
+- **ptratio -0.9527**: 학생-교사 비율이 1 단위 증가할 때, 주택 가격의 중앙값은 0.9527 단위 감소합니다.
+- **b 0.009312**: 흑인 인구 비율($Bk = 0.63 \times [1000(B - 0.63)^2]$)이 1 단위 증가할 때, 주택 가격의 중앙값은 0.009312 단위 증가합니다.
+- **lstat -0.5248**: 하위 계층의 비율이 1% 포인트 증가할 때, 주택 가격의 중앙값은 0.5248 단위 감소합니다.
+
+
+```{r}
+# load libraries
+library(caret)
+library(mlbench)
+# load dataset
+data(BostonHousing)
+# train
+set.seed(7)
+control <- trainControl(method="cv", number=5)
+fit.lm <- train(medv~., data=BostonHousing, method="lm", metric="RMSE", preProc=c("center", "scale"), trControl=control)
+# summarize fit
+print(fit.lm)
+```
+
+이 코드는 R 프로그래밍 언어를 사용하여 보스턴 주택 데이터셋(BostonHousing)에 선형 회귀 모델을 적용하고, 교차 검증을 통해 모델을 학습시키고 평가하는 과정을 담고 있습니다. 여기서 사용된 함수와 라이브러리들을 단계별로 설명하겠습니다.
+
+### 1. 라이브러리 로드
+- **caret**: 머신 러닝에 사용되는 여러 함수를 포함하는 패키지입니다. 모델 학습, 데이터 전처리, 성능 평가 등 다양한 기능을 제공합니다.
+- **mlbench**: 머신 러닝을 위한 벤치마크 데이터셋을 제공하는 패키지로, 여기서는 보스턴 주택 데이터셋을 불러오는 데 사용됩니다.
+
+### 2. 데이터셋 로드
+- `data(BostonHousing)`: mlbench 패키지에서 제공하는 보스턴 주택 가격 데이터셋을 로드합니다. 이 데이터셋에는 여러 주택 관련 특성과 해당 주택의 중간 가격(medv)이 포함되어 있습니다.
+
+### 3. 교차 검증을 위한 설정
+- `set.seed(7)`: 결과의 재현성을 보장하기 위해 난수 생성의 초기값을 설정합니다.
+- `trainControl`: 모델 학습과정에서 사용될 교차 검증 방법과 반복 횟수 등을 설정합니다. 여기서는 5-폴드 교차 검증(`cv`)을 사용하고 있습니다.
+
+### 4. 모델 학습
+- `train`: caret 패키지의 핵심 함수로, 다양한 머신 러닝 모델을 학습할 수 있습니다. 이 코드에서는 `medv ~ .`로 모든 변수를 사용해 주택 가격을 예측하는 선형 회귀 모델(`method="lm"`)을 학습합니다. 또한, 데이터를 중심화(`center`)하고 표준화(`scale`)하는 전처리 단계를 포함하고 있습니다.
+- `metric="RMSE"`: 모델의 성능 평가 기준을 평균 제곱근 오차(RMSE)로 설정합니다.
+
+### 5. 모델 요약 및 출력
+- `print(fit.lm)`: 학습된 모델의 세부 사항을 출력합니다. 이 결과에는 모델의 성능, 최적의 파라미터, 교차 검증 결과 등이 포함될 수 있습니다.
+
+이 코드는 보스턴 주택 데이터를 이용하여 주택 가격을 예측하는 데 필요한 최적의 선형 회귀 모델을 찾고, 그 성능을 정량적으로 평가하기 위한 과정을 구현하고 있습니다.
+
+
+## Logistic Regression
+
+```{r}
+# load the library
+library(mlbench)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# fit model
+fit <- glm(diabetes~., data=PimaIndiansDiabetes, family=binomial(link='logit'))
+# summarize the fit
+print(fit)
+# make predictions
+probabilities <- predict(fit, PimaIndiansDiabetes[,1:8], type='response')
+predictions <- ifelse(probabilities > 0.5,'pos','neg')
+# summarize accuracy
+table(predictions, PimaIndiansDiabetes$diabetes)
+```
+
+
+```{r}
+# load libraries
+library(caret)
+library(mlbench)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# train
+set.seed(7)
+control <- trainControl(method="cv", number=5)
+fit.glm <- train(diabetes~., data=PimaIndiansDiabetes, method="glm", metric="Accuracy", preProc=c("center", "scale"), trControl=control)
+# summarize fit
+print(fit.glm)
+```
+
+아래 표는 선형회귀와 로지스틱 회귀의 차이점과 공통점을 요약한 것입니다:
+
+| 구분         | 선형회귀                                               | 로지스틱 회귀                                          | 공통점                          |
+|------------|----------------------------------------------------|---------------------------------------------------|-------------------------------|
+| **목적**     | 연속적인 값을 가지는 종속 변수 예측                                 | 범주형 값을 가지는 종속 변수 예측                               | 변수 간의 관계 모델링                  |
+| **출력**     | 실수 범위의 연속적 값                                        | 0과 1 사이의 확률값                                      | -                               |
+| **가정**     | 종속 변수와 독립 변수 간 선형 관계, 오차는 정규 분포를 따름                | 종속 변수의 로그 오즈는 독립 변수의 선형 조합, 오차 분포 가정 없음            | -                               |
+| **모델 구조** | 독립 변수의 가중합을 직접 사용                                  | 독립 변수의 가중합을 시그모이드 함수에 적용                            | 독립 변수의 가중합을 기반으로 한 선형 방정식    |
+| **파라미터 추정** | 최대 우도 추정법, 경사 하강법 등 최적화 기법 사용                      | 최대 우도 추정법, 경사 하강법 등 최적화 기법 사용                     | 최적화 기법을 통한 파라미터 추정          |
+| **과적합 방지** | 정규화 기법(예: L1, L2 정규화) 사용 가능                           | 정규화 기법(예: L1, L2 정규화) 사용 가능                            | 모델 복잡도 조절을 위한 기법 사용 가능         |
+
+
+### 코드 설명
+이 코드는 R 프로그래밍 언어에서 `glm()` 함수를 사용하여 로지스틱 회귀 모델을 구현하는 부분입니다. 사용된 데이터셋은 `PimaIndiansDiabetes`이며, 이 데이터셋은 피마 인디언 여성들의 당뇨병 발병 여부와 관련된 여러 건강 지표를 포함하고 있습니다. 모델은 당뇨병 발병(`diabetes`) 여부를 예측하기 위해 구축됩니다.
+
+#### 함수 설명: `glm()`
+- **glm** stands for Generalized Linear Model. 이 함수는 선형 회귀뿐만 아니라 다양한 링크 함수와 오차 분포를 사용하는 일반화 선형 모델을 적합시키는 데 사용됩니다.
+- **family=binomial(link='logit')**는 이 회귀가 이진 로지스틱 회귀임을 나타냅니다. `binomial`은 종속 변수가 이항 분포를 따른다는 것을 의미하며, `link='logit'`은 로짓 함수를 링크 함수로 사용한다는 것을 의미합니다. 로짓 함수는 독립 변수의 선형 조합을 입력으로 받아 [0,1] 범위의 확률로 변환합니다.
+
+#### 모델 구성
+- **diabetes~.** : 이 구문은 `diabetes`를 종속 변수로 설정하고, `PimaIndiansDiabetes` 데이터셋의 나머지 모든 변수를 독립 변수로 사용하겠다는 것을 나타냅니다. 여기서 `.`는 "이 데이터셋의 모든 다른 변수들"을 의미합니다.
+- **data=PimaIndiansDiabetes** : 이는 `glm()` 함수가 사용할 데이터셋을 지정합니다.
+
+#### 예상 결과
+- 이 모델을 통해 각 피마 인디언 여성의 당뇨병 발병 확률을 예측할 수 있습니다. 결과로 얻은 모델 파라미터는 각 변수가 당뇨병 발병 위험에 얼마나 영향을 미치는지를 수치적으로 보여줍니다.
+- 출력된 모델의 계수(coefficient)는 각 변수가 당뇨병 발병 확률에 미치는 영향의 크기와 방향을 나타냅니다. 계수가 양수이면 해당 변수가 당뇨병 발병 확률을 증가시키는 요인이 되고, 음수이면 감소시키는 요인이 됩니다.
+
+
+### 코드 설명 추가
+
+위의 코드는 R에서 `glm()` 함수로 구축된 로지스틱 회귀 모델 (`fit`)을 사용하여, `PimaIndiansDiabetes` 데이터셋에 대한 예측을 수행하고, 이를 바탕으로 예측된 확률을 기반으로 분류 결정을 내리는 과정을 나타냅니다.
+
+### 코드 설명
+
+#### 1. 확률 계산
+```r
+probabilities <- predict(fit, PimaIndiansDiabetes[,1:8], type='response')
+```
+- **predict() 함수**: `fit` 모델을 사용하여 주어진 데이터에 대한 예측을 수행합니다.
+- **PimaIndiansDiabetes[,1:8]**: `PimaIndiansDiabetes` 데이터셋의 첫 8개 열을 사용합니다. 이는 모델에 사용된 독립 변수들을 의미합니다 (종속 변수를 제외).
+- **type='response'**: 예측된 값으로서 응답 확률을 반환하도록 지정합니다. 로지스틱 회귀에서는 이 옵션이 0과 1 사이의 발병 확률을 반환하게 합니다.
+
+#### 2. 이진 분류 결정
+```r
+predictions <- ifelse(probabilities > 0.5, 'pos', 'neg')
+```
+- **ifelse() 함수**: 주어진 조건에 따라 두 가지 결과 중 하나를 반환합니다.
+- **probabilities > 0.5**: 각 확률이 0.5보다 크면, 해당 사례는 'pos' (긍정적인 경우, 즉 당뇨병이 있음을 의미)로 분류됩니다. 0.5는 일반적으로 로지스틱 회귀에서 사용되는 기본 임계값입니다.
+- **'pos', 'neg'**: 확률이 0.5를 초과하면 'pos'로, 그렇지 않으면 'neg'로 분류합니다.
+
+### 결과 사용
+이렇게 생성된 `predictions` 변수는 각 사례가 'pos' (당뇨병 발병 가능성 높음) 또는 'neg' (당뇨병 발병 가능성 낮음)으로 분류된 결과를 담고 있습니다. 이 정보는 의료 진단, 환자 모니터링, 건강 관리 계획 수립 등에 유용하게 사용될 수 있습니다. 데이터셋의 각 인스턴스에 대한 구체적인 예측 결과를 제공함으로써, 개별 환자의 위험 요소를 평가하고 적절한 의료 조치를 계획하는 데 도움을 줄 수 있습니다.
+
+
+## Linear Discriminant Analysis
+
+```{r}
+# load the libraries
+library(MASS)
+library(mlbench)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# fit model
+fit <- lda(diabetes~., data=PimaIndiansDiabetes)
+# summarize the fit
+print(fit)
+# make predictions
+predictions <- predict(fit, PimaIndiansDiabetes[,1:8])$class
+# summarize accuracy
+table(predictions, PimaIndiansDiabetes$diabetes)
+
+# load libraries
+library(caret)
+library(mlbench)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# train
+set.seed(7)
+control <- trainControl(method="cv", number=5)
+fit.lda <- train(diabetes~., data=PimaIndiansDiabetes, method="lda", metric="Accuracy", preProc=c("center", "scale"), trControl=control)
+# summarize fit
+print(fit.lda)
+```
+
+제공하신 R 코드는 `PimaIndiansDiabetes` 데이터셋을 사용하여 선형 판별 분석(LDA) 모델을 구현하고 평가하는 두 가지 다른 접근 방식을 보여줍니다. 각 코드 블록의 목적과 기능을 자세히 설명하겠습니다.
+
+### 첫 번째 블록: 기본 LDA 구현
+#### 라이브러리와 데이터셋
+```r
+library(MASS)  # 통계적 메소드를 포함하고 있는 MASS 패키지를 로드
+library(mlbench)  # 머신 러닝 벤치마크 데이터셋을 제공하는 mlbench 패키지를 로드
+data(PimaIndiansDiabetes)  # PimaIndiansDiabetes 데이터셋을 로드
+```
+
+#### LDA 모델 적합
+```r
+fit <- lda(diabetes~., data=PimaIndiansDiabetes)  # 당뇨병을 반응 변수로 하고 모든 다른 변수들을 예측 변수로 사용하여 LDA 모델을 적합
+print(fit)  # 적합된 모델의 요약을 출력
+```
+
+#### 예측 수행
+```r
+predictions <- predict(fit, PimaIndiansDiabetes[,1:8])$class  # 적합된 모델을 사용하여 데이터셋에 대한 예측을 수행하고 클래스 예측을 추출
+```
+
+#### 정확도 요약
+```r
+table(predictions, PimaIndiansDiabetes$diabetes)  # 예측된 클래스와 실제 클래스를 비교하여 혼동 행렬을 생성
+```
+이 블록은 `MASS` 라이브러리를 사용하여 직접 LDA 모델을 적합하고 당뇨병 결과를 예측하여 모델 성능을 평가합니다.
+
+### 두 번째 블록: Caret 패키지를 사용한 LDA
+#### 라이브러리와 데이터셋 (첫 번째 블록과 유사)
+```r
+library(caret)  # 머신 러닝 워크플로우를 간소화하는 caret 패키지를 로드
+data(PimaIndiansDiabetes)  # 데이터셋 로딩을 반복
+```
+
+#### 교차 검증을 통한 모델 훈련
+```r
+set.seed(7)  # 결과의 재현성을 보장하기 위해 시드 설정
+control <- trainControl(method="cv", number=5)  # 모델 훈련을 위해 5-폴드 교차 검증 설정
+fit.lda <- train(diabetes~., data=PimaIndiansDiabetes, method="lda", metric="Accuracy", preProc=c("center", "scale"), trControl=control)
+print(fit.lda)  # 교차 검증으로 훈련된 모델의 요약을 출력
+```
+이 블록에서는 `caret` 패키지를 사용하여 보다 세련된 모델 훈련 방식을 적용합니다. 데이터 전처리 단계(중심화 및 스케일링)를 포함하고 교차 검증을 통해 모델 평가의 견고성을 높입니다. `caret`의 `train()` 함수는 파라미터 튜닝과 성능 평가를 자동화하여 모델 훈련 및 평가의 많은 단계를 단순화합니다.
+
+### 요약
+두 코드 블록은 모두 Pima Indian 데이터셋을 사용하여 당뇨병을 예측하기 위한 LDA 모델을 적합시키지만, 사용하는 라이브러리와 적합 및 평가 방
+
+법에서 차이를 보입니다. 첫 번째 블록은 더 직관적이고 수동적인 반면, 두 번째 블록은 `caret`을 사용하여 보다 자동화되고 잠재적으로 더 견고한 접근 방식을 사용하여 교차 검증과 데이터 전처리를 활용하여 모델 성능을 개선하고 보다 일반화된 정확도 평가를 제공합니다.
+
+## Regularized Regression
+
+```{r}
+# load the library
+library(glmnet)
+library(mlbench)
+# load data
+data(PimaIndiansDiabetes)
+x <- as.matrix(PimaIndiansDiabetes[,1:8])
+y <- as.matrix(PimaIndiansDiabetes[,9])
+# fit model
+fit <- glmnet(x, y, family="binomial", alpha=0.5, lambda=0.001)
+# summarize the fit
+print(fit)
+# make predictions
+predictions <- predict(fit, x, type="class")
+# summarize accuracy
+table(predictions, PimaIndiansDiabetes$diabetes)
+
+# load the libraries
+library(glmnet)
+library(mlbench)
+# load data
+data(BostonHousing)
+BostonHousing$chas <- as.numeric(as.character(BostonHousing$chas))
+x <- as.matrix(BostonHousing[,1:13])
+y <- as.matrix(BostonHousing[,14])
+# fit model
+fit <- glmnet(x, y, family="gaussian", alpha=0.5, lambda=0.001)
+# summarize the fit
+print(fit)
+# make predictions
+predictions <- predict(fit, x, type="link")
+# summarize accuracy
+mse <- mean((y - predictions)^2)
+print(mse)
+
+# load libraries
+library(caret)
+library(mlbench)
+library(glmnet)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# train
+set.seed(7)
+control <- trainControl(method="cv", number=5)
+fit.glmnet <- train(diabetes~., data=PimaIndiansDiabetes, method="glmnet", metric="Accuracy", preProc=c("center", "scale"), trControl=control)
+# summarize fit
+print(fit.glmnet)
+
+# load libraries
+library(caret)
+library(mlbench)
+library(glmnet)
+# Load the dataset
+data(BostonHousing)
+# train
+set.seed(7)
+control <- trainControl(method="cv", number=5)
+fit.glmnet <- train(medv~., data=BostonHousing, method="glmnet", metric="RMSE", preProc=c("center", "scale"), trControl=control)
+# summarize fit
+print(fit.glmnet)
+```
+
+
+
+<hr>
+
+## Nonlinear Algorithms
+
+
+<br><br><br><br><br>
+
+

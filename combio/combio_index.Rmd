@@ -1,0 +1,30 @@
+---
+title: "Computational Biology"
+subtitle: ""
+author: "Sung Rye Park"
+date: "`r format(Sys.Date())`"
+output:  
+  rmdformats::robobook: 
+    code_folding: show 
+    number_sections: FALSE
+    toc_depth: 6
+    toc_float: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, eval =T, fig.align = "left", 
+                      message=F, warning=F,
+                      results = "markup",
+                      error = TRUE,
+                      highlight = TRUE,
+                      prompt = FALSE,
+                      tidy = FALSE)
+```
+
+
+### Data preparation
+
+[Intro to Computational Biology - UNC BIOS/BCB 784](https://biodatascience.github.io/compbio/)<br>
+
+<br><br><br><br><br>
+
