@@ -1,0 +1,333 @@
+---
+title: "ML1"
+subtitle: "Elastic Net"
+author: "Sung Rye Park"
+date: "`r format(Sys.Date())`"
+output:  
+  rmdformats::robobook: 
+    code_folding: show 
+    number_sections: FALSE
+    toc_depth: 6
+    toc_float: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, eval =T, fig.align = "left", 
+                      message=F, warning=F,
+                      results = "markup",
+                      error = TRUE,
+                      highlight = TRUE,
+                      prompt = FALSE,
+                      tidy = FALSE)
+```
+
+```{r}
+library(dplyr)
+```
+
+
+엘라스틱넷을 사용하여 차원 축소를 수행하는 예시를 R 코드를 통해 설명드리겠습니다. 이 예시에서는 `glmnet` 패키지를 사용하여 엘라스틱넷 모델을 적용하고, 변수 선택을 통해 차원을 축소합니다. 여기서는 가상의 데이터셋을 사용하거나 실제 데이터셋(`mtcars` 등)을 사용할 수 있습니다.
+
+### 1. 라이브러리 및 데이터 준비
+
+```r
+# 필요한 라이브러리를 로드합니다.
+library(glmnet)
+
+# mtcars 데이터셋을 사용합니다. mpg를 종속 변수로, 나머지 변수들을 독립 변수로 설정합니다.
+data("mtcars")
+x <- as.matrix(mtcars[, -1])  # mpg를 제외한 모든 변수
+y <- mtcars$mpg  # mpg 변수
+```
+
+### 2. 엘라스틱넷 모델 적합
+엘라스틱넷에는 `alpha` 파라미터가 사용되며, `alpha=0.5`는 L1과 L2 정규화를 동등하게 조합합니다. `lambda`는 사용자가 지정하거나 자동으로 선택할 수 있습니다.
+```r
+# 엘라스틱넷 모델을 적합합니다.
+set.seed(123)  # 재현 가능한 결과를 위해 시드 설정
+cv_model <- cv.glmnet(x, y, alpha=0.5, family="gaussian")
+
+# 최적의 lambda 값을 찾습니다.
+best_lambda <- cv_model$lambda.min
+print(best_lambda)
+
+# 최적의 lambda를 사용하여 모델을 다시 적합합니다.
+final_model <- glmnet(x, y, alpha=0.5, lambda=best_lambda)
+```
+
+### 3. 결과 해석
+최적화된 모델의 계수를 확인하여, 중요한 변수를 확인하고 차원을 축소합니다.
+```r
+# 계수를 출력합니다.
+coef(final_model)
+```
+
+### 4. 플롯을 통한 시각화
+변수의 계수 크기를 통해 어떤 변수가 모델에 포함되었는지 시각적으로 확인할 수 있습니다.
+```r
+# 계수의 크기를 플롯으로 나타냅니다.
+plot(final_model, xvar="lambda", label=TRUE)
+```
+
+이 코드는 `mtcars` 데이터셋을 사용하여, `mpg`를 종속 변수로 하고 나머지 변수들을 독립 변수로 사용해 엘라스틱넷 모델을 적합하고, 최적의 `lambda`를 찾아 변수 중요도에 따라 차원을 축소하는 방법을 보여줍니다. 결과로 나온 계수 중 0이 아닌 계수를 갖는 변수들만을 선택함으로써, 실제로 모델에 유의미한 영향을 미치는 변수들만을 유지하게 됩니다. 이를 통해 차원을 축소하고 데이터를 더 간결하게 만들 수 있습니다.
+
+
+
+```{r}
+# 필요한 라이브러리를 로드합니다.
+library(glmnet)
+
+# mtcars 데이터셋을 사용합니다. mpg를 종속 변수로, 나머지 변수들을 독립 변수로 설정합니다.
+data("mtcars")
+x <- as.matrix(mtcars[, -1])  # mpg를 제외한 모든 변수
+y <- mtcars$mpg  # mpg 변수
+```
+
+
+```{r}
+# 엘라스틱넷 모델을 적합합니다
+# 엘라스틱넷에는 alpha 파라미터가 사용
+# alpha=0.5는 L1과 L2 정규화를 동등하게 조합합니다. lambda는 사용자가 지정하거나 자동으로 선택할 수 있습니다.
+set.seed(123)  # 재현 가능한 결과를 위해 시드 설정
+cv_model <- cv.glmnet(x, y, alpha=0.5, family="gaussian")
+
+# 최적의 lambda 값을 찾습니다.
+best_lambda <- cv_model$lambda.min
+print(best_lambda)
+
+# 최적의 lambda를 사용하여 모델을 다시 적합합니다.
+final_model <- glmnet(x, y, alpha=0.5, lambda=best_lambda)
+```
+
+
+```{r}
+# 결과해석
+# 최적화된 모델의 계수
+coef(final_model)
+```
+
+```{r}
+# 계수의 크기를 플롯으로 나타냅니다.
+plot(final_model, xvar="lambda", label=TRUE)
+```
+
+
+## final_model 구조
+
+`final_model` 객체의 구조를 확인한 결과는 `glmnet` 패키지를 사용하여 학습한 엘라스틱넷 모델의 내부 구조를 자세히 보여줍니다. 각 구성 요소가 무엇을 나타내는지 설명드리겠습니다.
+
+### 주요 구성 요소 설명
+
+1. **a0**:
+   - **내용**: 31.4
+   - **설명**: 절편(intercept) 값입니다. 모델에서 모든 독립 변수의 값이 0일 때의 종속 변수의 예상 값을 나타냅니다.
+
+2. **beta**:
+   - **내용**: 'dgCMatrix' 클래스의 행렬, 6개의 슬롯 포함
+   - **설명**: 독립 변수의 회귀 계수들입니다. 각 독립 변수의 계수가 저장되어 있으며, 이는 해당 변수가 종속 변수에 미치는 영향을 나타냅니다.
+     - `i`: 계수가 있는 비즈로컬 인덱스
+     - `p`: 열의 시작 인덱스
+     - `Dim`: 행렬의 차원 (10 x 1)
+     - `Dimnames`: 각 차원의 이름 (독립 변수의 이름)
+     - `x`: 실제 계수 값들
+     - `factors`: 계수와 관련된 추가 정보
+
+3. **df**:
+   - **내용**: 8
+   - **설명**: 모델에 사용된 독립 변수(피처)의 수를 나타냅니다. 이 모델에서는 8개의 독립 변수가 사용되었습니다.
+
+4. **dim**:
+   - **내용**: 10 1
+   - **설명**: `beta` 행렬의 차원입니다. 여기서는 10개의 피처와 1개의 종속 변수가 있습니다.
+
+5. **lambda**:
+   - **내용**: 0.761
+   - **설명**: 모델 학습에 사용된 `lambda` 값입니다. 이는 교차 검증을 통해 최적화된 정규화 강도입니다.
+
+6. **dev.ratio**:
+   - **내용**: 0.847
+   - **설명**: 모델이 설명하는 총 편차(deviance)의 비율입니다. 여기서는 모델이 전체 데이터 변동의 84.7%를 설명한다는 의미입니다.
+
+7. **nulldev**:
+   - **내용**: 1126
+   - **설명**: 종속 변수의 평균만을 사용한 모델의 총 편차입니다. 이는 모델이 아무 예측도 하지 않을 때의 기준 편차입니다.
+
+8. **npasses**:
+   - **내용**: 57
+   - **설명**: 알고리즘이 수렴하기 위해 수행한 패스(pass) 수입니다.
+
+9. **jerr**:
+   - **내용**: 0
+   - **설명**: 오류 상태를 나타내는 코드입니다. 0은 오류가 없음을 의미합니다.
+
+10. **offset**:
+    - **내용**: FALSE
+    - **설명**: 모델에 오프셋이 사용되었는지 여부를 나타냅니다. 여기서는 사용되지 않았습니다.
+
+11. **call**:
+    - **내용**: glmnet(x = x, y = y, alpha = 0.5, lambda = best_lambda)
+    - **설명**: `glmnet` 함수가 호출된 방식을 나타내는 언어 객체입니다. 모델이 어떻게 생성되었는지 보여줍니다.
+
+12. **nobs**:
+    - **내용**: 32
+    - **설명**: 사용된 관측치의 수입니다. 여기서는 32개의 데이터 포인트가 사용되었습니다.
+
+### 요약
+- **절편과 계수**: `a0`와 `beta`는 모델의 회귀 계수를 나타내며, 절편 값과 각 독립 변수의 계수를 포함합니다.
+- **모델 설명력**: `dev.ratio`는 모델이 데이터의 변동을 얼마나 잘 설명하는지를 나타내며, 높은 값은 모델이 잘 적합되었음을 의미합니다.
+- **최적화 정보**: `lambda` 값은 최적화된 정규화 강도를 나타내며, `npasses`는 알고리즘이 수렴하기 위해 수행된 패스 수를 보여줍니다.
+- **기타 정보**: `df`와 `nobs`는 사용된 피처와 관측치의 수를 나타냅니다.
+
+
+
+## Elastic Net TPM feature selection (application)
+
+```{r}
+# 필요한 라이브러리를 로드합니다.
+library(glmnet)
+
+# Import data matrix
+dir = "~/Desktop/git/study/ML/"
+tpm = read.csv(paste0(dir, "data/2024_4cons_tpms.csv"), row.names = 1, check.names = F)
+
+# Data normalization first
+# Z-점수 정규화 적용
+z_score_tpm <- t(apply(tpm, 1, function(x) (x - mean(x)) / sd(x)))
+
+
+# Set input values 
+x <- t(as.matrix(z_score_tpm))
+y <- colnames(tpm)
+
+# y를 수치형으로 변환
+y <- as.numeric(as.factor(y)) - 1  # 팩터를 수치형으로 변환하고, R의 팩터 인덱싱(1 시작)을 조정
+
+
+# alpha 값을 다양하게 설정하여 모델 적합
+alpha_values <- c(0, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 1)  # 다양한 alpha 값
+models <- list()
+for (alpha in alpha_values) {
+  set.seed(123)
+  cv_model <- cv.glmnet(x, y, alpha=alpha, family="gaussian", grouped = FALSE)
+  best_lambda <- cv_model$lambda.min
+  model <- glmnet(x, y, alpha=alpha, lambda=best_lambda)
+  models[[as.character(alpha)]] <- model
+}
+
+# 각 alpha 값에 따른 선택된 유전자 수 출력
+sapply(models, function(model) length(which(coef(model)[-1] != 0)))
+
+
+# 교차 검증을 사용하여 최적의 lambda 값을 찾습니다.
+# n is the selected alpha value (now fixed)
+
+n= 0.05
+set.seed(123)
+cv_model <- cv.glmnet(x, y, alpha=n, family="gaussian")
+
+best_lambda <- cv_model$lambda.min
+final_model <- glmnet(x, y, alpha=n, lambda=best_lambda)
+
+final_model
+
+# - **Lambda 52.94**: 람다(λ)는 모델의 정규화 강도를 결정합니다. 이 값이 클수록 모델에 더 큰 페널티가 부과되어 계수의 크기가 더 작아지고, 결과적으로 더 많은 계수가 0으로 수렴합니다. 람다가 52.94라는 것은 상당히 높은 페널티를 사용했다는 것을 나타내며, 이는 모델이 더 단순하거나, 데이터의 과소적합 가능성을 증가시킬 수 있습니다.
+
+
+# 새로운 계수 확인
+# coef(final_model)
+
+# 중요 유전자 선택
+selected_genes <- which(coef(final_model)[-1] != 0)  # 첫 번째 요소는 절편이므로 제외
+rownames(tpm)[selected_genes]
+
+# 선택된 유전자들만 포함한 새로운 데이터셋 생성
+reduced_data <- x[, selected_genes]
+# dim(reduced_data)  # 축소된 데이터의 차원 확인
+
+
+```
+
+### Heatmap 
+```{r}
+# Heatmap 
+t(reduced_data) %>% pheatmap::pheatmap(cluster_cols = F, gaps_col = c(3,6,9), 
+                                       fontsize_row = 5)
+```
+
+
+### Test 
+
+```{r}
+elasticNetModel <- function(x, y, alpha_value = 0.05) {
+  set.seed(1234)
+  
+  # 교차 검증을 사용하여 최적의 lambda 값을 찾습니다.
+  cv_model <- cv.glmnet(x, y, alpha = alpha_value, family = "gaussian")
+  best_lambda <- cv_model$lambda.min
+  
+  # 최적의 lambda를 사용하여 모델을 학습합니다.
+  final_model <- glmnet(x, y, alpha = alpha_value, lambda = best_lambda)
+
+  # 계수 확인 및 중요 유전자 선택
+  model_coefs <- coef(final_model)
+  selected_genes_indices <- which(model_coefs[-1] != 0)  # 첫 번째 요소(절편) 제외
+  important_genes <- colnames(x)[selected_genes_indices]
+  
+  # 선택된 유전자들만 포함한 새로운 데이터셋 생성
+  reduced_data <- x[, selected_genes_indices]
+  
+  # 결과를 리스트로 반환
+  return(list(
+    final_model = final_model,
+    important_genes = important_genes,
+    reduced_data = reduced_data
+  ))
+}
+```
+
+```{r}
+x <- t(as.matrix(z_score_tpm))
+y <- as.numeric(as.factor(colnames(tpm)))-1 # 수치형 변환
+```
+
+
+```{r}
+results <- elasticNetModel(x = x, y = y, alpha_value = 0.05)
+t(results$reduced_data) %>% pheatmap::pheatmap(cluster_cols = F, gaps_col = c(3,6,9), 
+                                               fontsize_row = 5)
+
+```
+
+
+```{r}
+results <- elasticNetModel(x = x, y = y, alpha_value = 0.01)
+t(results$reduced_data) %>% pheatmap::pheatmap(cluster_cols = F, gaps_col = c(3,6,9), 
+                                               fontsize_row = 5)
+
+```
+
+```{r}
+results <- elasticNetModel(x = x, y = y, alpha_value = 0.1)
+t(results$reduced_data) %>% pheatmap::pheatmap(cluster_cols = F, gaps_col = c(3,6,9), 
+                                               fontsize_row = 5)
+
+```
+
+
+### Consideration of other normalization methods 
+
+```{r, eval=FALSE}
+# 로그 변환 후 Z-점수 정규화
+log_tpm <- log2(tpm + 1)
+log_z_score_tpm <- t(apply(log_tpm, 1, function(x) (x - mean(x)) / sd(x)))
+
+```
+
+```{r, eval=FALSE}
+# 최소-최대 정규화 적용
+min_max_tpm <- t(apply(tpm, 1, function(x) (x - min(x)) / (max(x) - min(x))))
+
+```
+
+
+lambda를 너무 낮추면 과적합될수 있다

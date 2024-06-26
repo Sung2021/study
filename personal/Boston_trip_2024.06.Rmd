@@ -1,0 +1,70 @@
+---
+title: "Boston Trip 2024 "
+subtitle: "(feat.Ledia)"
+author: "Sung Rye Park"
+date: "`r format(Sys.Date())`"
+output:  
+  rmdformats::robobook: 
+    code_folding: show 
+    number_sections: FALSE
+    toc_depth: 6
+    toc_float: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, eval =T, fig.align = "left", 
+                      message=F, warning=F,
+                      results = "markup",
+                      error = TRUE,
+                      highlight = TRUE,
+                      prompt = FALSE,
+                      tidy = FALSE)
+```
+
+
+## Itinerary
+
+Visiting major attractions in Boston near Charles/MGH Station
+
+
+1. **Charles/MGH Station**
+
+2. **Beacon Hill**
+   - Head towards Beacon Hill, a historic and picturesque neighborhood known for its narrow, gas-lit streets and Federal-style rowhouses. This area is full of charm and is a great introduction to the historical beauty of Boston.<br><br>
+
+3. **Acorn Street**
+   - Your first stop in Beacon Hill is Acorn Street, often referred to as the most photographed street in the city. Its cobblestone paving and beautiful 19th-century homes make it a quintessential Boston landmark.<br><br>
+
+4. **Massachusetts State House**
+   - 24 Beacon St, Boston, MA 02133
+   - From Acorn Street, walk a short distance to the Massachusetts State House. Known for its distinctive golden dome, this building is not only a centerpiece of government but also a historic treasure with significant architecture.<br><br>
+
+5. **Boston Common**
+   - 139 Tremont St, Boston, MA 02111
+   - Next, head to Boston Common, directly south of the State House. As America’s oldest public park, Boston Common has rich historical significance and offers a spacious green oasis in the middle of the city.<br><br>
+
+6. **Public Garden**
+   - 4 Charles St, Boston, MA 02116
+   - Adjacent to Boston Common is the Public Garden. This beautifully landscaped park is famous for its Swan Boats, flower beds, and statues, offering a picturesque setting for relaxation and photography.
+
+7. **Charles River Esplanade**
+   - 1 Science Park, Boston, MA 02114
+   - Continue to the Charles River Esplanade, a lovely park along the banks of the Charles River. Enjoy walking or relaxing along the riverside paths while taking in stunning views of the Boston skyline.<br><br>
+
+8. **Charles/MGH Station**
+   - Returning to the Charles/MGH Station. <br><br>
+
+
+
+## Sandwich lunch near Beacon Hill, Boston
+
+1. **The Paramount** - Located right on Charles Street in Beacon Hill, this spot is highly recommended for its casual **American cafe vibe**. They are known for serving a variety of dishes, including delightful breakfast and lunch sandwiches. It's a popular spot, so there might be a wait, but it's well worth it for the quality of the food.
+
+    - Address: 44 Charles St, Beacon Hill, Boston, MA 02114<br><br>
+
+2. **Tatte Bakery & Cafe** - Also situated near Beacon Hill, Tatte is renowned for its **pastries and sandwiches**, making it a perfect lunch spot. Their coffee and breakfast sandwich have received particular praise, although some find their coffee a bit underwhelming compared to their excellent food offerings.
+
+    - 70 Charles Street, Boston, MA 02114<br><br>
+
+<br><br><br><br><br>
+

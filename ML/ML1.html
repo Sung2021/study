@@ -1630,6 +1630,15 @@ margin-left: 0 !important;
           <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis">Linear Discriminant
           Analysis</a>
           <ul>
+          <li><a href="#lda-설명" id="toc-lda-설명">LDA 설명</a></li>
+          <li><a href="#lda의-두-가지-기본-가정-매우-중요" id="toc-lda의-두-가지-기본-가정-매우-중요">LDA의 두 가지 기본
+          가정 (매우 중요)</a></li>
+          <li><a href="#계산-과정" id="toc-계산-과정">계산 과정</a></li>
+          <li><a href="#lda의-응용" id="toc-lda의-응용">LDA의
+          응용</a></li>
+          <li><a href="#장점과-단점" id="toc-장점과-단점">장점과
+          단점</a></li>
+          <li><a href="#코드" id="toc-코드">코드</a></li>
           <li><a href="#첫-번째-블록-기본-lda-구현" id="toc-첫-번째-블록-기본-lda-구현">첫 번째 블록: 기본 LDA
           구현</a>
           <ul>
@@ -1650,9 +1659,16 @@ margin-left: 0 !important;
           </ul></li>
           <li><a href="#요약" id="toc-요약">요약</a></li>
           </ul></li>
-          <li><a href="#regularized-regression" id="toc-regularized-regression">Regularized
-          Regression</a></li>
+          <li><a href="#regularized-regression-정규화-회귀" id="toc-regularized-regression-정규화-회귀">Regularized
+          Regression 정규화 회귀</a>
+          <ul>
+          <li><a href="#세가지-정규화-유형" id="toc-세가지-정규화-유형">세가지 정규화 유형</a></li>
+          </ul></li>
+          <li><a href="#load-the-libraries" id="toc-load-the-libraries">load the libraries</a>
+          <ul>
+          <li><a href="#코드-분석" id="toc-코드-분석">코드 분석</a></li>
           <li><a href="#nonlinear-algorithms" id="toc-nonlinear-algorithms">Nonlinear Algorithms</a></li>
+          </ul></li>
           </ul>
         </nav>
         <ul class="authors">
@@ -2047,6 +2063,78 @@ Rye Park</span></li>
 </div>
 <div id="linear-discriminant-analysis" class="section level2">
 <h2>Linear Discriminant Analysis</h2>
+<div id="lda-설명" class="section level3">
+<h3>LDA 설명</h3>
+<p>선형 판별 분석(Linear Discriminant Analysis, LDA)은 통계, 패턴 인식,
+머신 러닝 분야에서 사용되는 방법으로, 주로 분류 문제와 차원 축소에
+사용됩니다. LDA의 주 목적은 클래스 간의 분리를 최대화하는 방식으로
+데이터를 저차원 공간으로 투영함으로써, 클래스를 가능한 한 잘 구분할 수
+있도록 하는 것입니다.</p>
+</div>
+<div id="lda의-두-가지-기본-가정-매우-중요" class="section level3">
+<h3>LDA의 두 가지 기본 가정 (매우 중요)</h3>
+<p>LDA는 다음 두 가지 기본 가정에 기반합니다: 1.
+<strong>정규성</strong>: 각 클래스의 데이터는 정규 분포를 따릅니다. 2.
+<strong>동일한 공분산</strong>: 모든 클래스가 동일한 공분산 행렬을
+가집니다.</p>
+<p>이 가정들을 바탕으로 LDA는 클래스 간 분산은 최대화하고 클래스 내
+분산은 최소화하는 선형 조합을 찾습니다. 이를 통해 클래스를 잘 구분할 수
+있는 새로운 특성 축을 생성합니다.</p>
+</div>
+<div id="계산-과정" class="section level3">
+<h3>계산 과정</h3>
+<ol style="list-style-type: decimal">
+<li><strong>클래스 내 분산과 클래스 간 분산 계산</strong>:
+<ul>
+<li>클래스 내 분산(S_W)은 같은 클래스 내 데이터 포인트 간의 분산의 합을
+나타냅니다.</li>
+<li>클래스 간 분산(S_B)은 서로 다른 클래스의 평균 간의 분산을
+나타냅니다.</li>
+</ul></li>
+<li><strong>판별력 있는 축 찾기</strong>:
+<ul>
+<li>최적의 투영 축은 클래스 간 분산을 최대화하고 클래스 내 분산을
+최소화하는 방향으로 설정됩니다. 이는 <span class="math inline">\(S_W^{-1} S_B\)</span>의 최대 고유 벡터로 찾을 수
+있습니다.</li>
+</ul></li>
+<li><strong>데이터 투영</strong>:
+<ul>
+<li>원래 데이터를 찾아낸 축(또는 축들)에 투영하여 차원을 축소하고, 이
+투영된 데이터를 사용하여 분류하거나 다른 분석을 수행합니다.</li>
+</ul></li>
+</ol>
+</div>
+<div id="lda의-응용" class="section level3">
+<h3>LDA의 응용</h3>
+<ul>
+<li><strong>분류</strong>: LDA는 기본적으로 분류기로 사용될 수 있습니다.
+학습 데이터를 통해 모델을 생성하고, 새로운 데이터 포인트가 어떤 클래스에
+속하는지를 예측할 수 있습니다.</li>
+<li><strong>차원 축소</strong>: 특히 고차원 데이터셋에서 유용하며,
+시각화나 후속 분석을 위해 중요한 정보를 유지하면서 데이터의 차원을 줄일
+수 있습니다.</li>
+</ul>
+</div>
+<div id="장점과-단점" class="section level3">
+<h3>장점과 단점</h3>
+<ul>
+<li><strong>장점</strong>:
+<ul>
+<li>계산 효율성이 높고, 이해하기 쉽습니다.</li>
+<li>클래스의 중심을 잘 반영하는 특성으로 인해 분류 문제에서 좋은 성능을
+보일 수 있습니다.</li>
+</ul></li>
+<li><strong>단점</strong>:
+<ul>
+<li>정규성과 동일 공분산의 가정이 실제 데이터에 완벽히 맞지 않을 수
+있습니다.</li>
+<li>이진 분류 문제에는 잘 작동하지만, 다중 클래스 문제에서는 다소
+제한적일 수 있습니다.</li>
+</ul></li>
+</ul>
+</div>
+<div id="코드" class="section level3">
+<h3>코드</h3>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># load the libraries</span></span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
@@ -2114,6 +2202,7 @@ Rye Park</span></li>
 사용하여 선형 판별 분석(LDA) 모델을 구현하고 평가하는 두 가지 다른 접근
 방식을 보여줍니다. 각 코드 블록의 목적과 기능을 자세히
 설명하겠습니다.</p>
+</div>
 <div id="첫-번째-블록-기본-lda-구현" class="section level3">
 <h3>첫 번째 블록: 기본 LDA 구현</h3>
 <div id="라이브러리와-데이터셋" class="section level4">
@@ -2168,8 +2257,8 @@ Rye Park</span></li>
 성능을 개선하고 보다 일반화된 정확도 평가를 제공합니다.</p>
 </div>
 </div>
-<div id="regularized-regression" class="section level2">
-<h2>Regularized Regression</h2>
+<div id="regularized-regression-정규화-회귀" class="section level2">
+<h2>Regularized Regression 정규화 회귀</h2>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># load the library</span></span>
 <span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
 <span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
@@ -2186,113 +2275,149 @@ Rye Park</span></li>
 ## 
 ##   Df  %Dev Lambda
 ## 1  8 27.18  0.001</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># make predictions</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, x, <span class="at">type=</span><span class="st">&quot;class&quot;</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="co"># summarize accuracy</span></span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="fu">table</span>(predictions, PimaIndiansDiabetes<span class="sc">$</span>diabetes)</span></code></pre></div>
-<pre><code>##            
-## predictions neg pos
-##         neg 446 112
-##         pos  54 156</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># load the libraries</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="fu">data</span>(BostonHousing)</span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>BostonHousing<span class="sc">$</span>chas <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(BostonHousing<span class="sc">$</span>chas))</span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(BostonHousing[,<span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>])</span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(BostonHousing[,<span class="dv">14</span>])</span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x, y, <span class="at">family=</span><span class="st">&quot;gaussian&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">lambda=</span><span class="fl">0.001</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co"># summarize the fit</span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code></pre></div>
-<pre><code>## 
-## Call:  glmnet(x = x, y = y, family = &quot;gaussian&quot;, alpha = 0.5, lambda = 0.001) 
-## 
-##   Df  %Dev Lambda
-## 1 13 74.06  0.001</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># make predictions</span></span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, x, <span class="at">type=</span><span class="st">&quot;link&quot;</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="co"># summarize accuracy</span></span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>mse <span class="ot">&lt;-</span> <span class="fu">mean</span>((y <span class="sc">-</span> predictions)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="fu">print</span>(mse)</span></code></pre></div>
-<pre><code>## [1] 21.89497</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co"># load libraries</span></span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a><span class="fu">data</span>(PimaIndiansDiabetes)</span>
-<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a><span class="co"># train</span></span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method=</span><span class="st">&quot;cv&quot;</span>, <span class="at">number=</span><span class="dv">5</span>)</span>
-<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a>fit.glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(diabetes<span class="sc">~</span>., <span class="at">data=</span>PimaIndiansDiabetes, <span class="at">method=</span><span class="st">&quot;glmnet&quot;</span>, <span class="at">metric=</span><span class="st">&quot;Accuracy&quot;</span>, <span class="at">preProc=</span><span class="fu">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>), <span class="at">trControl=</span>control)</span>
-<span id="cb35-11"><a href="#cb35-11" tabindex="-1"></a><span class="co"># summarize fit</span></span>
-<span id="cb35-12"><a href="#cb35-12" tabindex="-1"></a><span class="fu">print</span>(fit.glmnet)</span></code></pre></div>
-<pre><code>## glmnet 
-## 
-## 768 samples
-##   8 predictor
-##   2 classes: &#39;neg&#39;, &#39;pos&#39; 
-## 
-## Pre-processing: centered (8), scaled (8) 
-## Resampling: Cross-Validated (5 fold) 
-## Summary of sample sizes: 614, 614, 615, 614, 615 
-## Resampling results across tuning parameters:
-## 
-##   alpha  lambda        Accuracy   Kappa    
-##   0.10   0.0004447834  0.7799083  0.4897029
-##   0.10   0.0044478343  0.7786096  0.4863051
-##   0.10   0.0444783425  0.7746965  0.4671033
-##   0.55   0.0004447834  0.7799083  0.4897029
-##   0.55   0.0044478343  0.7786096  0.4863051
-##   0.55   0.0444783425  0.7733978  0.4637090
-##   1.00   0.0004447834  0.7799083  0.4897029
-##   1.00   0.0044478343  0.7773109  0.4820061
-##   1.00   0.0444783425  0.7603854  0.4288692
-## 
-## Accuracy was used to select the optimal model using the largest value.
-## The final values used for the model were alpha = 0.1 and lambda = 0.0004447834.</code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co"># load libraries</span></span>
-<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="fu">library</span>(mlbench)</span>
-<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
-<span id="cb37-5"><a href="#cb37-5" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
-<span id="cb37-6"><a href="#cb37-6" tabindex="-1"></a><span class="fu">data</span>(BostonHousing)</span>
-<span id="cb37-7"><a href="#cb37-7" tabindex="-1"></a><span class="co"># train</span></span>
-<span id="cb37-8"><a href="#cb37-8" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb37-9"><a href="#cb37-9" tabindex="-1"></a>control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(<span class="at">method=</span><span class="st">&quot;cv&quot;</span>, <span class="at">number=</span><span class="dv">5</span>)</span>
-<span id="cb37-10"><a href="#cb37-10" tabindex="-1"></a>fit.glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(medv<span class="sc">~</span>., <span class="at">data=</span>BostonHousing, <span class="at">method=</span><span class="st">&quot;glmnet&quot;</span>, <span class="at">metric=</span><span class="st">&quot;RMSE&quot;</span>, <span class="at">preProc=</span><span class="fu">c</span>(<span class="st">&quot;center&quot;</span>, <span class="st">&quot;scale&quot;</span>), <span class="at">trControl=</span>control)</span>
-<span id="cb37-11"><a href="#cb37-11" tabindex="-1"></a><span class="co"># summarize fit</span></span>
-<span id="cb37-12"><a href="#cb37-12" tabindex="-1"></a><span class="fu">print</span>(fit.glmnet)</span></code></pre></div>
-<pre><code>## glmnet 
-## 
-## 506 samples
-##  13 predictor
-## 
-## Pre-processing: centered (13), scaled (13) 
-## Resampling: Cross-Validated (5 fold) 
-## Summary of sample sizes: 407, 404, 405, 404, 404 
-## Resampling results across tuning parameters:
-## 
-##   alpha  lambda      RMSE      Rsquared   MAE     
-##   0.10   0.01355531  4.810707  0.7262307  3.389524
-##   0.10   0.13555307  4.812876  0.7256063  3.365782
-##   0.10   1.35553073  4.985276  0.7090572  3.406411
-##   0.55   0.01355531  4.810701  0.7262168  3.388713
-##   0.55   0.13555307  4.843070  0.7219475  3.352890
-##   0.55   1.35553073  5.307289  0.6780759  3.670209
-##   1.00   0.01355531  4.810728  0.7261568  3.385221
-##   1.00   0.13555307  4.910252  0.7140956  3.376364
-##   1.00   1.35553073  5.496215  0.6677478  3.838152
-## 
-## RMSE was used to select the optimal model using the smallest value.
-## The final values used for the model were alpha = 0.55 and lambda = 0.01355531.</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x, y, <span class="at">family=</span><span class="st">&quot;binomial&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">lambda=</span><span class="fl">0.001</span>)</span></code></pre></div>
+<p><code>glmnet</code> 패키지를 사용하여 정규화 회귀 모델을 구축하는
+예시입니다. <code>glmnet</code>은 라쏘 회귀(L1 정규화), 릿지 회귀(L2
+정규화), 그리고 엘라스틱넷(L1과 L2의 조합)을 수행할 수 있는
+도구입니다.</p>
+<ul>
+<li><strong>x</strong>: 독립 변수 데이터(행렬 형태).</li>
+<li><strong>y</strong>: 종속 변수 데이터(이진 분류를 위한 벡터,
+‘binomial’ 가족을 사용).</li>
+<li><strong>family=“binomial”</strong>: 로지스틱 회귀를 수행하기 위해
+이진 응답 변수를 지정합니다.</li>
+<li><strong>alpha=0.5</strong>: <code>alpha</code> 파라미터는 L1
+정규화(Lasso)와 L2 정규화(Ridge)의 상대적인 비율을 조절합니다.
+<code>alpha</code>가 1이면 순수 Lasso 회귀를, 0이면 순수 Ridge 회귀를
+의미합니다. 여기서 0.5는 Lasso와 Ridge의 균등한 조합, 즉 엘라스틱넷을
+사용한다는 것을 나타냅니다.</li>
+<li><strong>lambda=0.001</strong>: <code>lambda</code>는 정규화의 강도를
+조절합니다. 높은 <code>lambda</code> 값은 보다 강한 정규화를 의미하며,
+계수를 더욱 축소시킵니다. 반면 낮은 <code>lambda</code> 값은 정규화
+효과를 감소시킵니다. 이 값은 모델의 복잡성과 과적합 방지 사이의 균형을
+설정하는 데 중요한 역할을 합니다.</li>
+</ul>
+<div id="세가지-정규화-유형" class="section level4">
+<h4>세가지 정규화 유형</h4>
+<table>
+<colgroup>
+<col width="30%" />
+<col width="13%" />
+<col width="30%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>정규화 유형</th>
+<th>설명</th>
+<th>정규화 방식</th>
+<th>주요 특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>릿지 회귀 (Ridge Regression)</strong></td>
+<td>계수의 제곱합을 최소화하는 L2 정규화를 추가하여 과적합을
+방지합니다.</td>
+<td>L2 정규화</td>
+<td>모든 변수를 포함하되 계수 값을 축소하여 변수 간 상관관계가 높은
+경우에 유용합니다. 계수를 완전히 0으로 만들지는 않습니다.</td>
+</tr>
+<tr class="even">
+<td><strong>라쏘 회귀 (Lasso Regression)</strong></td>
+<td>계수의 절대값 합을 최소화하는 L1 정규화를 추가하여 과적합을
+방지합니다.</td>
+<td>L1 정규화</td>
+<td>불필요한 변수의 계수를 0으로 만들어 모델을 단순화하고 변수 선택
+효과를 제공합니다. 변수의 수가 많고 그 중 일부만 중요할 때
+효과적입니다.</td>
+</tr>
+<tr class="odd">
+<td><strong>엘라스틱넷 (Elastic Net)</strong></td>
+<td>L1과 L2 정규화를 결합하여 두 가지 방식의 장점을 모두
+활용합니다.</td>
+<td>L1 + L2 정규화</td>
+<td>L1 정규화로 변수 선택을 하고, L2 정규화로 변수 간의 상관관계를
+처리합니다. 변수들이 그룹화되어 있는 경우나 변수의 수가 매우 많을 때
+유용합니다.</td>
+</tr>
+</tbody>
+</table>
+<p><a href="ML1_ElasticNet.html">Elastic Net example</a></p>
+</div>
+</div>
+<div id="load-the-libraries" class="section level1">
+<h1>load the libraries</h1>
+<p>library(glmnet) library(mlbench) # load data data(BostonHousing)
+BostonHousing<span class="math inline">\(chas &lt;-
+as.numeric(as.character(BostonHousing\)</span>chas)) x &lt;-
+as.matrix(BostonHousing[,1:13]) y &lt;- as.matrix(BostonHousing[,14]) #
+fit model fit &lt;- glmnet(x, y, family=“gaussian”, alpha=0.5,
+lambda=0.001) # summarize the fit print(fit) # make predictions
+predictions &lt;- predict(fit, x, type=“link”) # summarize accuracy mse
+&lt;- mean((y - predictions)^2) print(mse)</p>
+<pre><code>
+
+
+# load libraries
+library(caret)
+library(mlbench)
+library(glmnet)
+# Load the dataset
+data(PimaIndiansDiabetes)
+# train
+set.seed(7)
+control &lt;- trainControl(method=&quot;cv&quot;, number=5)
+fit.glmnet &lt;- train(diabetes~., data=PimaIndiansDiabetes, method=&quot;glmnet&quot;, metric=&quot;Accuracy&quot;, preProc=c(&quot;center&quot;, &quot;scale&quot;), trControl=control)
+# summarize fit
+print(fit.glmnet)
+
+# load libraries
+library(caret)
+library(mlbench)
+library(glmnet)
+# Load the dataset
+data(BostonHousing)
+# train
+set.seed(7)
+control &lt;- trainControl(method=&quot;cv&quot;, number=5)
+fit.glmnet &lt;- train(medv~., data=BostonHousing, method=&quot;glmnet&quot;, metric=&quot;RMSE&quot;, preProc=c(&quot;center&quot;, &quot;scale&quot;), trControl=control)
+# summarize fit
+print(fit.glmnet)</code></pre>
+<p>네, 제공하신 코드는 <code>glmnet</code> 패키지를 사용하여 정규화 회귀
+모델을 구축하는 예시입니다. <code>glmnet</code>은 라쏘 회귀(L1 정규화),
+릿지 회귀(L2 정규화), 그리고 엘라스틱넷(L1과 L2의 조합)을 수행할 수 있는
+도구입니다.</p>
+<div id="코드-분석" class="section level3">
+<h3>코드 분석</h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glmnet</span>(x, y, <span class="at">family=</span><span class="st">&quot;binomial&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">lambda=</span><span class="fl">0.001</span>)</span></code></pre></div>
+<ul>
+<li><strong>x</strong>: 독립 변수 데이터(행렬 형태).</li>
+<li><strong>y</strong>: 종속 변수 데이터(이진 분류를 위한 벡터,
+‘binomial’ 가족을 사용).</li>
+<li><strong>family=“binomial”</strong>: 로지스틱 회귀를 수행하기 위해
+이진 응답 변수를 지정합니다.</li>
+<li><strong>alpha=0.5</strong>: <code>alpha</code> 파라미터는 L1
+정규화(Lasso)와 L2 정규화(Ridge)의 상대적인 비율을 조절합니다.
+<code>alpha</code>가 1이면 순수 Lasso 회귀를, 0이면 순수 Ridge 회귀를
+의미합니다. 여기서 0.5는 Lasso와 Ridge의 균등한 조합, 즉 엘라스틱넷을
+사용한다는 것을 나타냅니다.</li>
+<li><strong>lambda=0.001</strong>: <code>lambda</code>는 정규화의 강도를
+조절합니다. 높은 <code>lambda</code> 값은 보다 강한 정규화를 의미하며,
+계수를 더욱 축소시킵니다. 반면 낮은 <code>lambda</code> 값은 정규화
+효과를 감소시킵니다. 이 값은 모델의 복잡성과 과적합 방지 사이의 균형을
+설정하는 데 중요한 역할을 합니다.</li>
+</ul>
+<p>이 코드는 엘라스틱넷 접근 방식을 사용하여 정규화 회귀 모델을 적용하고
+있습니다. 이 방법은 변수 선택과 복잡성 제어를 동시에 처리할 수 있는
+유연성을 제공하며, 특히 변수들 사이에 강한 상관관계가 있거나 변수의 수가
+많은 경우 유용합니다.</p>
 <hr>
 </div>
 <div id="nonlinear-algorithms" class="section level2">
 <h2>Nonlinear Algorithms</h2>
 <p><br><br><br><br><br></p>
+</div>
 </div>
 
    

@@ -1,0 +1,75 @@
+---
+title: "Computational Biology"
+subtitle: ""
+author: "Sung Rye Park"
+date: "`r format(Sys.Date())`"
+output:  
+  rmdformats::robobook: 
+    code_folding: show 
+    number_sections: FALSE
+    toc_depth: 6
+    toc_float: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=T, eval =T, fig.align = "left", 
+                      message=F, warning=F,
+                      results = "markup",
+                      error = TRUE,
+                      highlight = TRUE,
+                      prompt = FALSE,
+                      tidy = FALSE)
+```
+
+
+
+### 출력 파일
+| 파일 이름                   | 크기      | md5sum                             | 다운로드 링크 |
+|----------------------------|----------|------------------------------------|----------------|
+| Web Summary HTML           | 22.8 MB  | dc7c73e5b0c131fe5e0f8d01b7e77ff2   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_web_summary.html) |
+| Loupe file                 | 7.67 GB  | e95408fe8b20cebcc7a5e592f7f2f948   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_cloupe_008um.cloupe) |
+| Feature slice H5           | 788 MB   | ba5db688c27fa4b7203dc4f40c240453   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_feature_slice.h5) |
+| Metrics summary CSV        | 1.73 kB  | 6383b614e60617c8d38dfcb1c3653886   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_metrics_summary.csv) |
+| Molecule info H5           | 1.81 GB  | af81510925b40df7ee48f1b53e024cf8   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_molecule_info.h5) |
+| Spatial outputs            | 62.2 MB  | 18c123015ecad7dbb17e5862b427c21a   | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_spatial.tar.gz) |
+| Binned outputs (all bin levels) | 15.9 GB | 2a8a0df135d3d77ed77a465882f0bb2f | [다운로드](https://cf.10xgenomics.com/samples/spatial-exp/3.0.0/Visium_HD_Human_Colon_Cancer/Visium_HD_Human_Colon_Cancer_binned_outputs.tar.gz) |
+
+
+### 파일들 정보
+
+1. **Web Summary HTML**:
+   - 실험의 요약 결과를 보여주는 HTML 파일입니다. 시각화된 데이터와 주요 지표들을 포함하여 실험의 전반적인 성과를 쉽게 이해할 수 있게 제공합니다.
+
+2. **Loupe file**:
+   - 10x Genomics의 Loupe Browser를 통해 볼 수 있는 파일로, 공간적 유전자 발현 데이터를 시각적으로 탐색할 수 있습니다. 이 파일은 특정 조직의 섹션에 대한 상세한 유전자 발현 패턴과 클러스터링 결과를 포함합니다.
+
+3. **Feature slice H5**:
+   - HDF5 형식의 파일로, 실험에서 특정한 유전자 또는 기능의 발현 데이터를 담고 있습니다. 이 파일은 대량의 공간적 유전자 발현 데이터를 구조화된 형태로 저장하여, 효율적인 데이터 액세스와 처리를 가능하게 합니다.
+
+4. **Metrics summary CSV**:
+   - 실험의 다양한 지표들을 요약한 CSV 파일입니다. 예를 들어, 샘플별 유전자 발현 수준, 검출된 분자의 수, 유효 데이터 포인트의 비율 등 실험의 품질을 평가하는 데 필요한 정보가 포함되어 있습니다.
+
+5. **Molecule info H5**:
+   - 각 분자에 대한 상세 정보를 포함한 HDF5 파일입니다. 이 파일은 유전자 발현 실험에서 검출된 각각의 분자의 위치, 유전자 ID, 발현 수준 등의 데이터를 담고 있어, 데이터의 깊은 분석을 위한 기반을 제공합니다.
+
+6. **Spatial outputs**:
+   - 실험에서 생성된 공간적 데이터를 포함한 압축 파일입니다. 이 데이터는 조직의 특정 위치에서 유전자 발현 데이터를 시각화하기 위해 사용될 수 있으며, 연구자들이 조직 내 특정 세포 유형의 분포와 상호작용을 이해하는 데 도움을 줍니다.
+
+7. **Binned outputs (all bin levels)**:
+   - 공간적 유전자 발현 데이터를 여러 해상도 레벨로 구분하여 저장한 파일입니다. 이 파일은 큰 데이터 세트를 보다 쉽게 관리하고 분석할 수 있도록 도와주며, 다양한 스케일에서의 유전자 발현 패턴을 탐색할 수 있게 합니다.
+
+
+
+```{r}
+"Visium_HD_Human_Colon_Cancer_feature_slice.h5"
+
+# HDF5 파일 열기
+file_path <- "~/Desktop/DF/tmp/VisiumHD/data/Visium_HD_Human_Colon_Cancer_feature_slice.h5"
+
+# 파일 내의 데이터셋 목록 확인
+h5ls(file_path)
+```
+
+
+<br><br><br><br><br>
+
